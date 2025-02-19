@@ -18,10 +18,6 @@ jobs:
         with:
           fetch-depth: "0"
 
-      - name: Get current date and time
-        id: get-date
-        run: echo "CURRENT_DATE=$(date)" >> $GITHUB_ENV
-
       - name: Install uv
         uses: astral-sh/setup-uv@v5
         with:
@@ -58,47 +54,29 @@ jobs:
         id: comment-pr
         uses: thollander/actions-comment-pull-request@v3
         env:
-          MESSAGE_FAIL: '🚨 Some tests failed! 🚨 Please review the logs before approving or taking the risk. Date:  ${{ env.CURRENT_DATE }}<br>Failed Tests:<br>${{ env.FAILED_TESTS }}'
+          MESSAGE_FAIL: '🚨 Some tests failed! 🚨 Please review the logs before approving or taking the risk. <br>The following are the tests that failed:<br>${{ env.FAILED_TESTS }}'
           MESSAGE_SUCCESS: '✅ All tests passed. Great job! ✅'
         with:
           comment-tag: to-update
           mode: upsert
           message: |
-            ${{ env.TEST_EXIT_CODE != '0' && env.MESSAGE_FAIL || env.MESSAGE_SUCCESS }}
+            ${{ env.TEST_EXIT_CODE == '0' && env.MESSAGE_SUCCESS || env.MESSAGE_FAIL}}
 
       - name: Create a PR status badge
         if: always()
         id: pr-status-badge
         uses: actions/github-script@v7
+        # if ('${{ env.TEST_EXIT_CODE }}' != '0') {
         with:
           script: |
-            if ('${{ env.TEST_EXIT_CODE }}' != '0') {
+            if ('${{ env.TEST_EXIT_CODE }}' == '0') {
+            const message = "Success. Great job!";
+              core.summary.addHeading("✅ All tests passed ✅")
+                          .addRaw(message)
+                          .write();
+            } else {
               const message = `❌ Some tests failed. See logs for details. ❌`;
               core.summary.addHeading("❌ Some tests failed ❌")
                           .addRaw(message)
                           .write();
-            } else {
-              const message = "✅ All tests passed. Great job! ✅";
-              core.summary.addHeading("✅ All tests passed ✅")
-                          .addRaw(message)
-                          .write();
             }
-
-      # - name: Save test results
-      #   if: failure()
-      #   run: echo "❌ Some tests failed. See logs for details." >> $GITHUB_STEP_SUMMARY
-
-      # - name: Comment on PR if tests fail
-      #   id: comment-pr
-      #   if: failure()
-      #   uses: thollander/actions-comment-pull-request@v3
-      #   with:
-      #     comment-tag: to-update
-      #     mode: upsert
-      #     # create-if-not-exists: true
-      #     # reactions: eyes, rocket
-      #     message: |
-      #       "🚨 Some tests failed! Please review the logs before approving or taking the risk. Date: ${{ env.CURRENT_DATE }}"
-      #       "Failed Tests:"
-      #       ""
-      #       "${{ env.FAILED_TESTS }}"
