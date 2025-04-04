@@ -1,0 +1,17 @@
+name: Comment status on PR
+description: This action comments on a pull request with the status of the tests
+
+runs:
+  using: composite
+  steps:
+    - name: Comment on PR
+      id: comment-pr
+      uses: thollander/actions-comment-pull-request@v3
+      env:
+        MESSAGE_FAIL: '🚨 Some tests failed! 🚨 Please review the logs before approving or taking the risk. <br>The following are the tests that failed:<br>${{ env.FAILED_TESTS }}'
+        MESSAGE_SUCCESS: '✅ All tests passed. Great job! ✅'
+      with:
+        comment-tag: to-update
+        mode: upsert
+        message: |
+          ${{ env.TEST_EXIT_CODE == '0' && env.MESSAGE_SUCCESS || env.MESSAGE_FAIL}}

@@ -1,0 +1,23 @@
+name: Setup Aws ECR
+description: This action Setup the AWS ECR
+
+inputs:
+  ENV:
+    description: The environment to deploy to (e.g., dev, staging, prod)
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup AWS
+      run: echo "Configure AWS/Artifact/ECR credentials"
+      shell: bash
+
+    - name: Build, tag, push docker image
+      run: echo "build, tag, push docker image
+      shell: bash
+
+    - name: Deploy Amazon ECS task definition
+      run: echo "Deploy Amazon ECS task definition"
+      shell: bash
+

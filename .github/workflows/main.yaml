@@ -1,0 +1,27 @@
+name: Unit Tests
+
+on:
+  push:
+    branches:
+      # - prod
+      - to-be-defined
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: "0"
+
+      # - name: Setup env
+      #   uses: ./.github/actions/deploy-ecr
+      #   with:
+      #     ENV: prod
+
+      # - name: Slack notification
+      #   uses: ./.github/actions/slack-notification
+      #   with:
+      #     text_message: "result ? success : failure"
+

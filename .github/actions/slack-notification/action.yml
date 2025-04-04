@@ -1,0 +1,16 @@
+name: Trigger Automated Tests
+description: This action Trigger the run on the automated tests project
+
+inputs:
+  text_message:
+    description: This is the message that will be sent to slack
+    default: 'Success on job'
+    required: false
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run e2e tests
+      run: echo "This is the message ${{ inputs.text_message }}"
+      shell: bash

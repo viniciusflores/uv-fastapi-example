@@ -1,0 +1,9 @@
+name: Trigger Automated Tests
+description: This action Trigger the run on the automated tests project
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run e2e tests
+      run: echo "Trigger the run on the automated tests project"
+      shell: bash

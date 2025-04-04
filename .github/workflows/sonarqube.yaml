@@ -5,14 +5,9 @@ on:
     branches:
       - to-be-defined
 
-
-permissions:
-  pull-requests: write
-
 jobs:
   run-tests:
     strategy:
-      # Run all tests to provide feedback on full branch
       fail-fast: false
     runs-on: ubuntu-latest
     steps:
@@ -27,13 +22,10 @@ jobs:
 
       # - name: Run Tests
       #   uses: ./.github/actions/run-tests
-      #   # with:
-      #   #   export-coverage: 'false'
+      #   id: run-tests
+      #   with:
+      #     export_coverage: 'true'
 
-      # - name: Comment on PR
-      #   if: always()
-      #   uses: ./.github/actions/comment-status-on-pr
+      # - name: SonarQube Scan
+      #   uses: ./.github/actions/sonarqube
 
-      # - name: Create a PR status badge
-      #   if: always()
-      #   uses: ./.github/actions/create-pr-badge

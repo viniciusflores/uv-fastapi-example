@@ -1,0 +1,84 @@
+name: Unit Tests True
+
+on:
+  pull_request:
+
+permissions:
+  pull-requests: write
+
+jobs:
+  run-tests:
+    strategy:
+      # Run all tests to provide feedback on full branch
+      fail-fast: false
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: "0"
+
+    - name: Install Just
+      uses: extractions/setup-just@v2
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+      with:
+        version: "0.5.24"
+
+    - name: Sync dependencies
+      run: uv sync
+
+    - name: Run tests
+      id: run-tests
+      run: |
+        just test | tee >(grep "^FAILED" > failed_tests.txt) | tee >(tail -n 1 >> failed_tests.txt)
+        TEST_EXIT_CODE=${PIPESTATUS[0]}
+        echo $TEST_EXIT_CODE > test_exit_code.txt
+        exit $TEST_EXIT_CODE
+
+    - name: Read failed tests
+      if: ${{ always() }}
+      id: read-failed-tests
+      run: |
+        TEST_EXIT_CODE=$(cat test_exit_code.txt)
+        echo "TEST_EXIT_CODE=$TEST_EXIT_CODE" >> $GITHUB_ENV
+        if [ "$TEST_EXIT_CODE" -ne 0 ]; then
+          if [ -f failed_tests.txt ]; then
+            FAILED_TESTS=$(cat failed_tests.txt)
+            echo "FAILED_TESTS<<EOF" >> $GITHUB_ENV
+            echo "$FAILED_TESTS" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+          fi
+        fi
+
+    - name: Comment on PR
+      if: always()
+      id: comment-pr
+      uses: thollander/actions-comment-pull-request@v3
+      env:
+        MESSAGE_FAIL: '🚨 Some tests failed! 🚨 Please review the logs before approving or taking the risk. <br>The following are the tests that failed:<br>${{ env.FAILED_TESTS }}'
+        MESSAGE_SUCCESS: '✅ All tests passed. Great job! ✅'
+      with:
+        comment-tag: to-update
+        mode: upsert
+        message: |
+          ${{ env.TEST_EXIT_CODE == '0' && env.MESSAGE_SUCCESS || env.MESSAGE_FAIL}}
+
+    - name: Create a PR status badge
+      if: always()
+      id: pr-status-badge
+      uses: actions/github-script@v7
+      with:
+        script: |
+          if ('${{ env.TEST_EXIT_CODE }}' == '0') {
+            const message = "Success. Great job!";
+            core.summary.addHeading("✅ All tests passed ✅")
+                        .addRaw(message)
+                        .write();
+          } else {
+            const message = `❌ Some tests failed. See logs for details. ❌`;
+            core.summary.addHeading("❌ Some tests failed ❌")
+                        .addRaw(message)
+                        .write();
+          }

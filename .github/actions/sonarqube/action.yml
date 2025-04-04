@@ -1,0 +1,9 @@
+name: Setup Environment
+description: This is a helper to setup the py environment
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run Sonarqube Scan
+      run: echo "Call our internal Sonarqube scan"
+      shell: bash

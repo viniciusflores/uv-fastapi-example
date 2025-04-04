@@ -1,0 +1,23 @@
+name: Create PR Status Badge
+description: This is a helper to create a PR status badge
+
+runs:
+  using: "composite"
+  steps:
+    - name: Create a PR status badge
+      id: pr-status-badge
+      uses: actions/github-script@v7
+      with:
+        script: |
+          if ('${{ env.TEST_EXIT_CODE }}' == '0') {
+          const message = "Success. Great job!";
+            core.summary.addHeading("✅ All tests passed ✅")
+                        .addRaw(message)
+                        .write();
+          } else {
+            const message = `❌ Some tests failed. See logs for details. ❌`;
+            core.summary.addHeading("❌ Some tests failed ❌")
+                        .addRaw(message)
+                        .write();
+          }
+
