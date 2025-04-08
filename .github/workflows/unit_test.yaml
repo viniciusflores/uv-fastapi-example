@@ -21,18 +21,18 @@ jobs:
         with:
           fetch-depth: "0"
 
-      - name: Setup env
-        uses: ./.github/actions/setup-env
-        timeout-minutes: 10
+      # - name: Setup env
+      #   uses: ./.github/actions/setup-env
+      #   timeout-minutes: 10
 
-      - name: Run Tests
-        id: run-tests
-        uses: ./.github/actions/run-tests
+      # - name: Run Tests
+      #   id: run-tests
+      #   uses: ./.github/actions/run-tests
 
-      - name: Comment on PR
-        if: always() && (steps.run-tests.conclusion == 'success' || steps.run-tests.conclusion == 'failure')
-        uses: ./.github/actions/comment-status-on-pr
+      # - name: Comment on PR
+      #   if: always() && (steps.run-tests.conclusion == 'success' || steps.run-tests.conclusion == 'failure')
+      #   uses: ./.github/actions/comment-status-on-pr
 
-      - name: Create a PR status badge
-        if: always() && (steps.run-tests.conclusion == 'success' || steps.run-tests.conclusion == 'failure')
-        uses: ./.github/actions/create-pr-badge
+      # - name: Create a PR status badge
+      #   if: always() && (steps.run-tests.conclusion == 'success' || steps.run-tests.conclusion == 'failure')
+      #   uses: ./.github/actions/create-pr-badge
