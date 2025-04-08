@@ -14,13 +14,13 @@ jobs:
         with:
           fetch-depth: "0"
 
-      - name: Setup env
-        uses: ./.github/actions/deploy-ecr
-        with:
-          ENV: dev
+      # - name: Setup env
+      #   uses: ./.github/actions/deploy-ecr
+      #   with:
+      #     ENV: dev
 
-      - name: Slack notification
-        uses: ./.github/actions/slack-notification
-        with:
-          text_message: "result ? success : failure"
+      # - name: Slack notification
+      #   uses: ./.github/actions/slack-notification
+      #   with:
+      #     text_message: "result ? success : failure"
 
