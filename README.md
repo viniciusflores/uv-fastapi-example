@@ -18,7 +18,3 @@ MIT
 
 ### This is an append to readme
 ### This is another append to readme
-
-Test 01
-Test 02
-Test 03
