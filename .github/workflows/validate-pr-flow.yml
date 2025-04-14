@@ -1,0 +1,34 @@
+name: Validate PR Branch Flow
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  validate-pr-flow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate PR source and target branches
+        run: |
+          HEAD="${{ github.event.pull_request.head.ref }}"
+          BASE="${{ github.event.pull_request.base.ref }}"
+
+          echo "🔍 Validating PR from '$HEAD' to '$BASE'..."
+
+          # Allowed rules
+          if [[ "$BASE" == "stage" && "$HEAD" =~ ^(feature|bugfix)\/.+ ]]; then
+            echo "✅ PR from '$HEAD' to 'stage' is allowed (feature or bugfix)"
+            exit 0
+          elif [[ "$BASE" == "main" && "$HEAD" == "stage" ]]; then
+            echo "✅ PR from 'stage' to 'main' is allowed (release to production)"
+            exit 0
+          elif [[ "$BASE" == "main" && "$HEAD" =~ ^hotfix\/.+ ]]; then
+            echo "✅ PR from hotfix to main is allowed (emergency fix)"
+            exit 0
+          elif [[ "$BASE" == "dev" ]]; then
+            echo "✅ PR to 'dev' is always allowed"
+            exit 0
+          else
+            echo "❌ PR from '$HEAD' to '$BASE' is not allowed based on branch flow rules"
+            exit 1
+          fi
