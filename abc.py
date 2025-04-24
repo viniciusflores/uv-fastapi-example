@@ -1,3 +1,3 @@
 def dummy(arg1, arg2):
-    print(f"{arg1} from dummy function")
+    print(f"{arg1} and {arg2} from dummy function")
     return None
