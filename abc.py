@@ -1,2 +1,2 @@
-def dummy(arg1):
+def self_return(arg1):
     return arg1
