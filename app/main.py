@@ -33,3 +33,7 @@ async def root(name: str):
 @app.post("/hello-user/{name}")
 async def root(name: str):
     return {"message": f"Hello {name}"}
+
+@app.put("/hello-user/{name}")
+async def root(name: str):
+    return {"message": f"Hello {name}"}
