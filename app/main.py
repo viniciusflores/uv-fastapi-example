@@ -25,3 +25,7 @@ async def root():
 @app.get("/hello")
 async def root():
     return {"message": "Hello World!"}
+
+@app.get("/hello2")
+async def root():
+    return {"message": "Hello World again"}
