@@ -37,3 +37,11 @@ async def root(name: str):
 @app.put("/hello-user/{name}")
 async def root(name: str):
     return {"message": f"Hello {name}"}
+
+@app.patch("/hello-user/{name}")
+async def root(name: str):
+    return {"message": f"Hello {name}"}
+
+@app.delete("/hello-user/{name}")
+async def root(name: str):
+    return {"message": f"Hello {name}"}
