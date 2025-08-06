@@ -1,0 +1,28 @@
+name: Manual Trigger
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Digite o nome da branch'
+        required: true
+        type: string
+
+jobs:
+  run-manually:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # necessário para buscar todas as branches
+      - name: Validar branch
+        run: |
+          if git show-ref --verify --quiet refs/heads/${{ github.event.inputs.branch }}; then
+            echo "Branch existe: ${{ github.event.inputs.branch }}"
+          else
+            echo "Branch não existe: ${{ github.event.inputs.branch }}"
+            exit 1
+          fi
+      - name: Checkout branch selecionada
+        run: git checkout ${{ github.event.inputs.branch }}
