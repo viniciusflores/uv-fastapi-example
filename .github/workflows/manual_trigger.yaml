@@ -2,11 +2,11 @@ name: Manual Trigger
 
 on:
   workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Digite o nome da branch'
-        required: true
-        type: string
+    # inputs:
+    #   branch:
+    #     description: 'Digite o nome da branch'
+    #     required: true
+    #     type: string
 
 jobs:
   run-manually:
