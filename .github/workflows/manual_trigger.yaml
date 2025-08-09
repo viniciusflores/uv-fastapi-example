@@ -16,33 +16,39 @@ jobs:
       - name: Checkout código
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.inputs.branch }}
+          ref: ${{ github.ref }}
+          # ref: ${{ github.event.inputs.branch }}
 
 
-
-      - name: Validar e fazer checkout da branch
+      - name: Show workflow file branch
         run: |
-          if git show-ref --verify --quiet refs/heads/${{ github.event.inputs.branch }}; then
-            echo "Branch local existe: ${{ github.event.inputs.branch }}"
-            git checkout ${{ github.event.inputs.branch }}
-          elif git show-ref --verify --quiet refs/remotes/origin/${{ github.event.inputs.branch }}; then
-            echo "Branch remota existe: ${{ github.event.inputs.branch }}"
-            git checkout -b ${{ github.event.inputs.branch }} origin/${{ github.event.inputs.branch }}
-          else
-            echo "Branch não existe: ${{ github.event.inputs.branch }}"
-            exit 1
-          fi
+          echo "Workflow file branch ref: ${{ github.ref }}"
+          echo "Workflow file branch name: ${{ github.ref_name }}"
+
+
+      # - name: Validar e fazer checkout da branch
+      #   run: |
+      #     if git show-ref --verify --quiet refs/heads/${{ github.event.inputs.branch }}; then
+      #       echo "Branch local existe: ${{ github.event.inputs.branch }}"
+      #       git checkout ${{ github.event.inputs.branch }}
+      #     elif git show-ref --verify --quiet refs/remotes/origin/${{ github.event.inputs.branch }}; then
+      #       echo "Branch remota existe: ${{ github.event.inputs.branch }}"
+      #       git checkout -b ${{ github.event.inputs.branch }} origin/${{ github.event.inputs.branch }}
+      #     else
+      #       echo "Branch não existe: ${{ github.event.inputs.branch }}"
+      #       exit 1
+      #     fi
 
       - name: Checkout branch selecionada
         run: git checkout ${{ github.event.inputs.branch }}
       - name: Git status
         run: git status
 
-      - name: Git status2
-        run: ${{ github.event.inputs.branch }}
+      # - name: Git status2
+      #   run: ${{ github.event.inputs.branch }}
 
-      - name: Git status3
-        run: ${{ github.ref }}
+      # - name: Git status3
+      #   run: ${{ github.ref }}
 
       - name: Show workflow file branch
         run: |
