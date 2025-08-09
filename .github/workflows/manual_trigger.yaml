@@ -43,3 +43,8 @@ jobs:
 
       - name: Git status3
         run: ${{ github.ref }}
+
+      - name: Show workflow file branch
+        run: |
+          echo "Workflow file branch ref: ${{ github.ref }}"
+          echo "Workflow file branch name: ${{ github.ref_name }}"
