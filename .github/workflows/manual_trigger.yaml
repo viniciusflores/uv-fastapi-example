@@ -2,11 +2,11 @@ name: Manual Trigger
 
 on:
   workflow_dispatch:
-    inputs:
-      branch:
-        description: 'Branch to deploy'
-        required: true
-        default: 'main'
+    # inputs:
+    #   branch:
+    #     description: 'Branch to deploy'
+    #     required: true
+    #     default: 'main'
 
 
 jobs:
@@ -40,3 +40,6 @@ jobs:
 
       - name: Git status2
         run: ${{ github.event.inputs.branch }}
+
+      - name: Git status3
+        run: ${{ github.ref }}
