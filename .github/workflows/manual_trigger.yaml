@@ -16,7 +16,9 @@ jobs:
       - name: Checkout código
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # necessário para buscar todas as branches
+          ref: ${{ github.event.inputs.branch }}
+
+
 
       - name: Validar e fazer checkout da branch
         run: |
@@ -33,3 +35,8 @@ jobs:
 
       - name: Checkout branch selecionada
         run: git checkout ${{ github.event.inputs.branch }}
+      - name: Git status
+        run: git status
+
+      - name: Git status2
+        run: ${{ github.event.inputs.branch }}
