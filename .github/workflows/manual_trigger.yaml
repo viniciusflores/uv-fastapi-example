@@ -1,0 +1,35 @@
+name: Manual Trigger
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch to deploy'
+        required: true
+        default: 'main'
+
+
+jobs:
+  run-manually:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # necessário para buscar todas as branches
+
+      - name: Validar e fazer checkout da branch
+        run: |
+          if git show-ref --verify --quiet refs/heads/${{ github.event.inputs.branch }}; then
+            echo "Branch local existe: ${{ github.event.inputs.branch }}"
+            git checkout ${{ github.event.inputs.branch }}
+          elif git show-ref --verify --quiet refs/remotes/origin/${{ github.event.inputs.branch }}; then
+            echo "Branch remota existe: ${{ github.event.inputs.branch }}"
+            git checkout -b ${{ github.event.inputs.branch }} origin/${{ github.event.inputs.branch }}
+          else
+            echo "Branch não existe: ${{ github.event.inputs.branch }}"
+            exit 1
+          fi
+
+      - name: Checkout branch selecionada
+        run: git checkout ${{ github.event.inputs.branch }}
