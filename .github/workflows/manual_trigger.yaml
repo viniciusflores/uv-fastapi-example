@@ -8,6 +8,9 @@ on:
     #     required: true
     #     default: 'main'
 
+env:
+  POTATO: 'this is a env POTATO'
+  GIT_BRANCH: ${{ github.ref_name }}
 
 jobs:
   run-manually:
@@ -24,6 +27,7 @@ jobs:
         run: |
           echo "Workflow file branch ref: ${{ github.ref }}"
           echo "Workflow file branch name: ${{ github.ref_name }}"
+          echo "This is the env of gitname ${{ env.GIT_BRANCH }}"
 
 
       # - name: Validar e fazer checkout da branch
