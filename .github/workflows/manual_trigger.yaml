@@ -10,7 +10,7 @@ on:
 
 env:
   POTATO: 'this is a env POTATO'
-  GIT_BRANCH: ${{ github.ref_name }}
+  GIT_BRANCH_SELECTED: ${{ github.ref_name }}
 
 jobs:
   verify_custom_branch_allowed:
@@ -34,6 +34,7 @@ jobs:
 
 
   run-manually:
+    needs: verify_custom_branch_allowed
     runs-on: ubuntu-latest
     steps:
       - name: Checkout código
