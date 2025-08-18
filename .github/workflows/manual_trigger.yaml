@@ -13,6 +13,26 @@ env:
   GIT_BRANCH: ${{ github.ref_name }}
 
 jobs:
+  verify_custom_branch_allowed:
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ env.GIT_BRANCH_SELECTED }}
+
+      - name: Verify branch name
+        run: |
+          BLOCKED_BRANCHES="dev stage"
+          for blocked in $BLOCKED_BRANCHES; do
+            if [[ "${GIT_BRANCH_SELECTED}" == "$blocked" ]]; then
+              echo "This workflow can't be run on the '$blocked' branch."
+              exit 1
+            fi
+          done
+
+
   run-manually:
     runs-on: ubuntu-latest
     steps:
@@ -29,19 +49,6 @@ jobs:
           echo "Workflow file branch name: ${{ github.ref_name }}"
           echo "This is the env of gitname ${{ env.GIT_BRANCH }}"
 
-
-      # - name: Validar e fazer checkout da branch
-      #   run: |
-      #     if git show-ref --verify --quiet refs/heads/${{ github.event.inputs.branch }}; then
-      #       echo "Branch local existe: ${{ github.event.inputs.branch }}"
-      #       git checkout ${{ github.event.inputs.branch }}
-      #     elif git show-ref --verify --quiet refs/remotes/origin/${{ github.event.inputs.branch }}; then
-      #       echo "Branch remota existe: ${{ github.event.inputs.branch }}"
-      #       git checkout -b ${{ github.event.inputs.branch }} origin/${{ github.event.inputs.branch }}
-      #     else
-      #       echo "Branch não existe: ${{ github.event.inputs.branch }}"
-      #       exit 1
-      #     fi
 
       - name: Checkout branch selecionada
         run: git checkout ${{ github.event.inputs.branch }}
