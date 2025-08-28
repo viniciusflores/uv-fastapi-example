@@ -9,53 +9,30 @@ env:
 
 jobs:
   verify_custom_branch_allowed:
-
     runs-on: ubuntu-latest
     steps:
-      - name: Check out code
-        uses: actions/checkout@v3
-        with:
-          ref: ${{ env.GIT_BRANCH_SELECTED }}
+      - name: Show default branch value
+        run: echo "Default value: $GIT_BRANCH_SELECTED"
 
-      - name: Verify branch name
+      - name: Change branch value
         run: |
-          BLOCKED_BRANCHES="dev stage"
-          for blocked in $BLOCKED_BRANCHES; do
-            if [[ "${GIT_BRANCH_SELECTED}" == "$blocked" ]]; then
-              echo "This workflow can't be run on the '$blocked' branch."
-              exit 1
-            fi
-          done
+          echo "GIT_BRANCH_SELECTED=my-new-value" >> $GITHUB_ENV
 
-      - name: Show workflow file branch 1
+      - name: Show updated branch value
+        run: echo "Updated value: $GIT_BRANCH_SELECTED"
+
+      - name: Use updated value in logic
         run: |
-          echo "Workflow file branch ref: ${{ github.ref }}"
-          echo "Workflow file branch name: ${{ github.ref_name }}"
-          echo "This is the env of gitname ${{ env.GIT_BRANCH_SELECTED }}"
-
-      - name: Definir nova branch
-        run: |
-          echo "GIT_BRANCH_SELECTED=meu-novo-valor" >> $GITHUB_ENV
-
-      - name: Show workflow file branch 2
-        run: |
-          echo "Workflow file branch ref: ${{ github.ref }}"
-          echo "Workflow file branch name: ${{ github.ref_name }}"
-          echo "This is the env of gitname ${{ env.GIT_BRANCH_SELECTED }}"
-
+          if [[ "$GIT_BRANCH_SELECTED" == "my-new-value" ]]; then
+            echo "Branch successfully changed!"
+          else
+            echo "Branch not changed!"
+            exit 1
+          fi
 
   run-manually:
     needs: verify_custom_branch_allowed
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout código
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.ref }}
-
-      - name: Show workflow file branch
-        run: |
-          echo "Workflow file branch ref: ${{ github.ref }}"
-          echo "Workflow file branch name: ${{ github.ref_name }}"
-          echo "This is the env of gitname ${{ env.GIT_BRANCH_SELECTED }}"
-
+      - name: Show inherited branch value
+        run: echo "Inherited value: $GIT_BRANCH_SELECTED"
