@@ -31,7 +31,7 @@ jobs:
         run: |
           echo "Workflow file branch ref: ${{ github.ref }}"
           echo "Workflow file branch name: ${{ github.ref_name }}"
-          echo "This is the env of gitname ${{ env.GIT_BRANCH }}"
+          echo "This is the env of gitname ${{ env.GIT_BRANCH_SELECTED }}"
 
       - name: Definir nova branch
         run: |
@@ -41,7 +41,7 @@ jobs:
         run: |
           echo "Workflow file branch ref: ${{ github.ref }}"
           echo "Workflow file branch name: ${{ github.ref_name }}"
-          echo "This is the env of gitname ${{ env.GIT_BRANCH }}"
+          echo "This is the env of gitname ${{ env.GIT_BRANCH_SELECTED }}"
 
 
   run-manually:
@@ -57,5 +57,5 @@ jobs:
         run: |
           echo "Workflow file branch ref: ${{ github.ref }}"
           echo "Workflow file branch name: ${{ github.ref_name }}"
-          echo "This is the env of gitname ${{ env.GIT_BRANCH }}"
+          echo "This is the env of gitname ${{ env.GIT_BRANCH_SELECTED }}"
 
