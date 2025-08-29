@@ -2,6 +2,11 @@ name: Manual Trigger
 
 on:
   workflow_dispatch:
+    inputs:
+      branch_name_example:
+        description: 'Select a branch'
+        default: 'main'
+        type: string
 
 env:
   POTATO: 'this is a env POTATO'
@@ -14,21 +19,22 @@ jobs:
       - name: Show default branch value
         run: echo "Default value: $GIT_BRANCH_SELECTED"
 
-      - name: Change branch value
+      # - name: Change branch value
+      #   run: |
+      #     echo "GIT_BRANCH_SELECTED=my-new-value" >> $GITHUB_ENV
+
+      - name: Use updated value in logic
         run: |
-          echo "GIT_BRANCH_SELECTED=my-new-value" >> $GITHUB_ENV
+          if [[ "$GIT_BRANCH_SELECTED" != "${{ github.event.inputs.branch_name_example }}" ]]; then
+            echo "GIT_BRANCH_SELECTED=${{ github.event.inputs.branch_name_example }}" >> $GITHUB_ENV
+          else
+            exit 0
+          fi
 
       - name: Show updated branch value
         run: echo "Updated value: $GIT_BRANCH_SELECTED"
 
-      - name: Use updated value in logic
-        run: |
-          if [[ "$GIT_BRANCH_SELECTED" == "my-new-value" ]]; then
-            echo "Branch successfully changed!"
-          else
-            echo "Branch not changed!"
-            exit 1
-          fi
+
 
   run-manually:
     needs: verify_custom_branch_allowed
@@ -36,3 +42,13 @@ jobs:
     steps:
       - name: Show inherited branch value
         run: echo "Inherited value: $GIT_BRANCH_SELECTED"
+
+      - name: Validate branch/tag input
+        run: |
+          INPUT="${{ github.event.inputs.branch_name_example }}"
+          # Regex: must start with [a-zA-Z0-9_], then allow [a-zA-Z0-9_.-], max 128 chars
+          if [[ ! "$INPUT" =~ ^[a-zA-Z0-9_][a-zA-Z0-9_.-]{0,127}$ ]]; then
+            echo "Invalid tag: $INPUT"
+            exit 1
+          fi
+          echo "Valid tag: $INPUT"
