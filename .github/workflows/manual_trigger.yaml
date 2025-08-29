@@ -13,7 +13,8 @@ env:
   GIT_BRANCH_SELECTED: ${{ github.ref_name }}
 
 jobs:
-  verify_custom_branch_allowed:
+  verify_branch:
+    name: Verify Branch
     runs-on: ubuntu-latest
     steps:
       - name: Show default branch value
@@ -29,16 +30,23 @@ jobs:
           fi
 
       - name: Show updated branch value
-        run: echo "Updated value: $GIT_BRANCH_SELECTED"
+        run: |
+          echo "Updated value: $GIT_BRANCH_SELECTED"
 
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: "0"
 
 
   run-manually:
-    needs: verify_custom_branch_allowed
+    needs: verify_branch
+    name: Run Manually
     runs-on: ubuntu-latest
     steps:
       - name: Show inherited branch value
-        run: echo "Inherited value: $GIT_BRANCH_SELECTED"
+        run: |
+          echo "Inherited value: $GIT_BRANCH_SELECTED"
 
       - name: Validate branch/tag input
         run: |
