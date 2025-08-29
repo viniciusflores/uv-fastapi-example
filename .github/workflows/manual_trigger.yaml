@@ -79,4 +79,4 @@ jobs:
       - name: show data
         run: |
           echo "GIT_BRANCH_SELECTED=$GIT_BRANCH_SELECTED"
-          echo "SANITIZED_TAG=$SANITIZED"
+          echo "SANITIZED_TAG=$SANITIZED_TAG"
