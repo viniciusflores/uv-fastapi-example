@@ -61,19 +61,16 @@ jobs:
       - name: Sanitize and validate branch/tag input
         run: |
           INPUT="${{ github.event.inputs.branch_name_example }}"
-          # Remove all characters except a-z, A-Z, 0-9, _, ., -
-          SANITIZED=$(echo "$INPUT" | sed 's/[^a-zA-Z0-9_.-]//g')
-          # Remove leading periods or hyphens
-          SANITIZED=$(echo "$SANITIZED" | sed 's/^[.-]*//')
-          # Trim to 128 characters
-          SANITIZED="${SANITIZED:0:128}"
+          SANITIZED=$(echo "$INPUT" | sed 's/[^a-zA-Z0-9_.-]//g' | sed 's/^[.-]*//' | cut -c1-128)
           echo "Sanitized tag: $SANITIZED"
-          # Optional: fail if empty after sanitization
           if [[ -z "$SANITIZED" ]]; then
             echo "Sanitized tag is empty, invalid input."
             exit 1
           fi
-          # Export for next steps if needed
+          if [[ "$INPUT" != "$SANITIZED" ]]; then
+            echo "Input was sanitized from '$INPUT' to '$SANITIZED'"
+            echo "### Input was sanitized from \`$INPUT\` to \`$SANITIZED\`" >> $GITHUB_STEP_SUMMARY
+          fi
           echo "SANITIZED_TAG=$SANITIZED" >> $GITHUB_ENV
 
       - name: show data
