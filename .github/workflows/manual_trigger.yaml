@@ -17,11 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Show default branch value
-        run: echo "Default value: $GIT_BRANCH_SELECTED"
-
-      # - name: Change branch value
-      #   run: |
-      #     echo "GIT_BRANCH_SELECTED=my-new-value" >> $GITHUB_ENV
+        run: |
+          echo "Default value: $GIT_BRANCH_SELECTED"
 
       - name: Use updated value in logic
         run: |
