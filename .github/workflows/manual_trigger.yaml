@@ -13,50 +13,50 @@ env:
   GIT_BRANCH_SELECTED: ${{ github.ref_name }}
 
 jobs:
-  verify_branch:
-    name: Verify Branch
-    runs-on: ubuntu-latest
-    steps:
-      - name: Show default branch value
-        run: |
-          echo "Default value: $GIT_BRANCH_SELECTED"
+  # verify_branch:
+  #   name: Verify Branch
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Show default branch value
+  #       run: |
+  #         echo "Default value: $GIT_BRANCH_SELECTED"
 
-      - name: Use updated value in logic
-        run: |
-          if [[ "$GIT_BRANCH_SELECTED" != "${{ github.event.inputs.branch_name_example }}" ]]; then
-            echo "GIT_BRANCH_SELECTED=${{ github.event.inputs.branch_name_example }}" >> $GITHUB_ENV
-          else
-            exit 0
-          fi
+  #     - name: Use updated value in logic
+  #       run: |
+  #         if [[ "$GIT_BRANCH_SELECTED" != "${{ github.event.inputs.branch_name_example }}" ]]; then
+  #           echo "GIT_BRANCH_SELECTED=${{ github.event.inputs.branch_name_example }}" >> $GITHUB_ENV
+  #         else
+  #           exit 0
+  #         fi
 
-      - name: Show updated branch value
-        run: |
-          echo "Updated value: $GIT_BRANCH_SELECTED"
+  #     - name: Show updated branch value
+  #       run: |
+  #         echo "Updated value: $GIT_BRANCH_SELECTED"
 
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: "0"
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: "0"
 
 
   run-manually:
-    needs: verify_branch
+    # needs: verify_branch
     name: Run Manually
     runs-on: ubuntu-latest
     steps:
-      - name: Show inherited branch value
-        run: |
-          echo "Inherited value: $GIT_BRANCH_SELECTED"
+      # - name: Show inherited branch value
+      #   run: |
+      #     echo "Inherited value: $GIT_BRANCH_SELECTED"
 
-      - name: Validate branch/tag input
-        run: |
-          INPUT="${{ github.event.inputs.branch_name_example }}"
-          # Regex: must start with [a-zA-Z0-9_], then allow [a-zA-Z0-9_.-], max 128 chars
-          if [[ ! "$INPUT" =~ ^[a-zA-Z0-9_][a-zA-Z0-9_.-]{0,127}$ ]]; then
-            echo "Invalid tag: $INPUT"
-            exit 1
-          fi
-          echo "Valid tag: $INPUT"
+      # - name: Validate branch/tag input
+      #   run: |
+      #     INPUT="${{ github.event.inputs.branch_name_example }}"
+      #     # Regex: must start with [a-zA-Z0-9_], then allow [a-zA-Z0-9_.-], max 128 chars
+      #     if [[ ! "$INPUT" =~ ^[a-zA-Z0-9_][a-zA-Z0-9_.-]{0,127}$ ]]; then
+      #       echo "Invalid tag: $INPUT"
+      #       exit 1
+      #     fi
+      #     echo "Valid tag: $INPUT"
 
       - name: Sanitize and validate branch/tag input
         run: |
@@ -75,3 +75,8 @@ jobs:
           fi
           # Export for next steps if needed
           echo "SANITIZED_TAG=$SANITIZED" >> $GITHUB_ENV
+
+      - name: show data
+        run: |
+          echo "GIT_BRANCH_SELECTED=$GIT_BRANCH_SELECTED"
+          echo "SANITIZED_TAG=$SANITIZED"
