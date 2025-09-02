@@ -16,6 +16,8 @@ jobs:
   verify_branch:
     name: Verify Branch
     runs-on: ubuntu-latest
+    outputs:
+      my_custom_var: ${{ steps.export_var.outputs.my_custom_var }}
     steps:
       - name: Show default branch value
         run: |
@@ -35,31 +37,25 @@ jobs:
           echo "Updated value: $GIT_BRANCH_SELECTED"
           echo "My custom var: $my_custom_var"
 
-      # - name: Checkout repository
-      #   uses: actions/checkout@v3
-      #   with:
-      #     fetch-depth: "0"
+      - name: Export
+        id: export_var
+        run: |
+          echo "my_custom_var=${{ github.event.inputs.branch_name_example }}" >> $GITHUB_OUTPUT
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: "0"
 
 
   run-manually:
-    # needs: verify_branch
+    needs: verify_branch
     name: Run Manually
     runs-on: ubuntu-latest
     steps:
-      # - name: Show inherited branch value
-      #   run: |
-      #     echo "Inherited value: $GIT_BRANCH_SELECTED"
 
-      # - name: Validate branch/tag input
-      #   run: |
-      #     INPUT="${{ github.event.inputs.branch_name_example }}"
-      #     # Regex: must start with [a-zA-Z0-9_], then allow [a-zA-Z0-9_.-], max 128 chars
-      #     if [[ ! "$INPUT" =~ ^[a-zA-Z0-9_][a-zA-Z0-9_.-]{0,127}$ ]]; then
-      #       echo "Invalid tag: $INPUT"
-      #       exit 1
-      #     fi
-      #     echo "Valid tag: $INPUT"
-
+      - name: Set my_custom_var as env
+        run: echo "MY_CUSTOM_VAR=${{ needs.verify_branch.outputs.my_custom_var }}" >> $GITHUB_ENV
       - name: Sanitize and validate branch/tag input
         run: |
           INPUT="${{ github.event.inputs.branch_name_example }}"
@@ -81,4 +77,7 @@ jobs:
           echo "GIT_BRANCH_SELECTED=${{env.GIT_BRANCH_SELECTED}}"
           echo "SANITIZED_TAG=$SANITIZED_TAG"
           echo "SANITIZED_TAG=$my_custom_var"
+          echo "SANITIZED_TAG=$MY_CUSTOM_VAR"
 
+      - name: Show my_custom_var from previous job
+        run: echo "my_custom_var=${{ needs.verify_branch.outputs.my_custom_var }}"
