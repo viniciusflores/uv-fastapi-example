@@ -25,6 +25,7 @@ jobs:
         run: |
           if [[ "$GIT_BRANCH_SELECTED" != "${{ github.event.inputs.branch_name_example }}" ]]; then
             echo "GIT_BRANCH_SELECTED=${{ github.event.inputs.branch_name_example }}" >> $GITHUB_ENV
+            echo "my_custom_var=${{ github.event.inputs.branch_name_example }}" >> $GITHUB_ENV
           else
             exit 0
           fi
@@ -32,11 +33,12 @@ jobs:
       - name: Show updated branch value
         run: |
           echo "Updated value: $GIT_BRANCH_SELECTED"
+          echo "My custom var: $my_custom_var"
 
-      - name: Checkout repository
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: "0"
+      # - name: Checkout repository
+      #   uses: actions/checkout@v3
+      #   with:
+      #     fetch-depth: "0"
 
 
   run-manually:
@@ -78,4 +80,5 @@ jobs:
           echo "GIT_BRANCH_SELECTED=$GIT_BRANCH_SELECTED"
           echo "GIT_BRANCH_SELECTED=${{env.GIT_BRANCH_SELECTED}}"
           echo "SANITIZED_TAG=$SANITIZED_TAG"
+          echo "SANITIZED_TAG=$my_custom_var"
 
